@@ -1,0 +1,29 @@
+language: python
+python:
+  - "3.6"
+sudo: required
+services:
+  - postgresql
+  - docker
+
+before_script:
+  - psql -c "create database test_db;" -U postgres
+  - psql -c "create database flask_api;" -U postgres
+  - docker build -t bucketlistapi2 .
+  - docker login bucketlistregistry.azurecr.io -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+
+# command to install dependencies
+install: 
+  - "pip install -r requirements.txt"
+  - "pip install coveralls"
+
+# command to run tests
+script: nosetests --with-coverage --cover-package=app
+
+after_success: 
+  - coveralls -i
+  - docker tag bucketlistapi2 bucketlistregistry.azurecr.io/bucketlistapi2
+  - docker push bucketlistapi2 bucketlistregistry.azurecr.io/bucketlistapi2
+
+  
+

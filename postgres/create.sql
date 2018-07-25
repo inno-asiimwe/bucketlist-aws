@@ -1,0 +1,2 @@
+CREATE DATABASE flask_api;
+CREATE DATABASE test_db;

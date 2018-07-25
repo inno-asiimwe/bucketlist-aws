@@ -1,0 +1,31 @@
+version: '3.6'
+services:
+  api:
+    build:
+      context: ./bucketlist-api
+      dockerfile: Dockerfile
+    volumes:
+      - './bucketlist-api:/app'
+    ports:
+      - 5001:5000
+    environment:
+      - APP_SETTINGS=development
+      - SECRET=My-secret-a-long-string
+      - FLASK_APP=run.py
+      - DATABASE_URL=postgres://postgres:postgres@database:5432/flask_api
+      - DATABASE_TEST_URL=postgres://postgres:postgres@database:5432/test_db
+
+    depends_on:
+      - database
+
+  database:
+    build:
+      context: ./postgres
+      dockerfile: Dockerfile
+    ports:
+      - 5435:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+   
